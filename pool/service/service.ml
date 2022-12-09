@@ -63,6 +63,10 @@ module Email = struct
 
   let send ?ctx email =
     Logs.info (fun m -> m "Send email to %s" email.Sihl_email.recipient);
+    (* TODO [josef] fetch tenant configuration, take email sender and replace it
+       in email *)
+    let sender = "fetch from config" in
+    let email = Sihl_email.{ email with sender } in
     let%lwt () =
       handle
         (send ?ctx)
@@ -75,6 +79,14 @@ module Email = struct
   ;;
 
   let bulk_send ?ctx emails =
+    (* TODO [josef] fetch tenant configuration, take email sender and replace it
+       in email *)
+    let sender = "fetch from config" in
+    let emails =
+      List.map
+        (fun (email : Sihl_email.t) -> Sihl_email.{ email with sender })
+        emails
+    in
     Logs.info (fun m -> m "Send %d emails" (CCList.length emails));
     let%lwt () =
       handle
