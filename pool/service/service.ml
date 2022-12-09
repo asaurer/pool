@@ -61,12 +61,13 @@ module Email = struct
          else_fcn email new_recipient)
   ;;
 
-  let send ?ctx email =
+  let send ?sender ?ctx email =
     Logs.info (fun m -> m "Send email to %s" email.Sihl_email.recipient);
-    (* TODO [josef] fetch tenant configuration, take email sender and replace it
-       in email *)
-    let sender = "fetch from config" in
-    let email = Sihl_email.{ email with sender } in
+    let email =
+      match sender with
+      | Some sender -> Sihl_email.{ email with sender }
+      | None -> email
+    in
     let%lwt () =
       handle
         (send ?ctx)

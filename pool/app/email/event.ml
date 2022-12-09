@@ -35,7 +35,8 @@ let send_confirmation
       ; "content", content
       ]
   in
-  email_template |> Service.Email.send ~ctx:(Pool_tenant.to_ctx pool)
+  let%lwt sender = Settings.find_sender pool in
+  email_template |> Service.Email.send ~sender ~ctx:(Pool_tenant.to_ctx pool)
 ;;
 
 let create_token pool address =
